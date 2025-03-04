@@ -1,16 +1,147 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Forms in html</title>
-    </head>
-    <body>
-        <label for="cars">Choose a car:</label>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validated Registration Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input[type="radio"], input[type="checkbox"] {
+            width: auto;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            display: none;
+        }
+        #password-strength {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
 
-<select name="cars" id="cars">
-  <option value="volvo">Volvo</option>
-  <option value="saab">Saab</option>
-  <option value="mercedes">Mercedes</option>
-  <option value="audi">Audi</option>
-</select>
-    </body>
+    <div class="container">
+        <h2>Registration Form</h2>
+        <form id="registrationForm">
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <div class="error" id="emailError">Invalid email format</div>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <div id="password-strength">Password Strength: Weak</div>
+            <div class="error" id="passwordError">Password must be at least 8 characters, contain an uppercase letter, a number, and a special character</div>
+
+            <label for="phone">Phone Number:</label>
+            <input type="text" id="phone" name="phone" required>
+            <div class="error" id="phoneError">Enter a valid 10-digit phone number</div>
+
+            <button type="submit" id="submitBtn" disabled>Register</button>
+
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const emailInput = document.getElementById("email");
+            const passwordInput = document.getElementById("password");
+            const phoneInput = document.getElementById("phone");
+            const submitBtn = document.getElementById("submitBtn");
+
+            function validateEmail() {
+                const emailError = document.getElementById("emailError");
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(emailInput.value)) {
+                    emailError.style.display = "block";
+                    return false;
+                }
+                emailError.style.display = "none";
+                return true;
+            }
+
+            function validatePassword() {
+                const passwordError = document.getElementById("passwordError");
+                const strengthText = document.getElementById("password-strength");
+                const strongPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                
+                if (strongPattern.test(passwordInput.value)) {
+                    strengthText.textContent = "Password Strength: Strong";
+                    strengthText.style.color = "green";
+                    passwordError.style.display = "none";
+                    return true;
+                } else {
+                    strengthText.textContent = "Password Strength: Weak";
+                    strengthText.style.color = "red";
+                    passwordError.style.display = "block";
+                    return false;
+                }
+            }
+
+            function validatePhone() {
+                const phoneError = document.getElementById("phoneError");
+                const phonePattern = /^\d{10}$/;
+                if (!phonePattern.test(phoneInput.value)) {
+                    phoneError.style.display = "block";
+                    return false;
+                }
+                phoneError.style.display = "none";
+                return true;
+            }
+
+            function validateForm() {
+                if (validateEmail() && validatePassword() && validatePhone()) {
+                    submitBtn.disabled = false;
+                } else {
+                    submitBtn.disabled = true;
+                }
+            }
+
+            emailInput.addEventListener("input", validateForm);
+            passwordInput.addEventListener("input", validateForm);
+            phoneInput.addEventListener("input", validateForm);
+
+            document.getElementById("registrationForm").addEventListener("submit", function (event) {
+                if (!validateEmail() || !validatePassword() || !validatePhone()) {
+                    event.preventDefault(); // Prevent form submission if validation fails
+                    alert("Please correct the errors before submitting.");
+                }
+            });
+        });
+    </script>
+
+</body>
 </html>
